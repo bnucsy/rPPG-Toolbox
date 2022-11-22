@@ -245,3 +245,5 @@ def calculate_metric(predictions, labels, signal='pulse', window_size=360, fs=30
     RMSE = np.sqrt(np.mean(np.square(HR - HR0)))
     meanSNR = np.nanmean(mySNR)
     return MAE, RMSE, meanSNR, HR0, HR
+
+# %%

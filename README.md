@@ -6,6 +6,15 @@ STEP2: `conda activate rppg-toolbox`
 
 STEP3: `pip install -r requirements.txt` 
 
+# FAST run Training and Testing on UBFC with PhysNet
+
+STEP : `python main.py --config_file ./configs/UBFC_UBFC_UBFC_PYHSNET_BASIC.yaml`
+
+Note1: Preprocessing requires only once; thus turn it off on the yaml file when you train the network after the first time. 
+
+Note2: The example yaml setting will allow 60% of UBFC to train and 20% of UBFC to valid. 
+After training, it will use the best model(with the least validation loss) to test on UBFC.
+
 # Training on PURE and testing on UBFC with TSCAN 
 
 STEP1: Download the PURE raw data by asking the [paper authors](https://www.tu-ilmenau.de/universitaet/fakultaeten/fakultaet-informatik-und-automatisierung/profil/institute-und-fachgebiete/institut-fuer-technische-informatik-und-ingenieurinformatik/fachgebiet-neuroinformatik-und-kognitive-robotik/data-sets-code/pulse-rate-detection-dataset-pure).

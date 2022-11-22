@@ -69,11 +69,10 @@ class UBFCLoader(BaseLoader):
         filename = os.path.split(data_dirs[i]['path'])[-1]
         saved_filename = data_dirs[i]['index']
 
-        frames = self.read_video(
-            os.path.join(data_dirs[i]['path'],"vid.avi"))
+        frames = self.read_video(os.path.join(data_dirs[i]['path'],"001vid.avi"))   # 这里要改成001vid.avi，原本是 vid.avi，这个问题是普遍问题，或许是服务器上数据的命名
         bvps = self.read_wave(
             os.path.join(data_dirs[i]['path'],"ground_truth.txt"))
-            
+
         frames_clips, bvps_clips = self.preprocess(frames, bvps, config_preprocess, config_preprocess.LARGE_FACE_BOX)
         count, input_name_list, label_name_list = self.save_multi_process(frames_clips, bvps_clips, saved_filename)
         file_list_dict[i] = input_name_list
