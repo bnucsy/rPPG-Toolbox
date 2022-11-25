@@ -14,6 +14,31 @@ import numpy as np
 from dataset.data_loader.BaseLoader import BaseLoader
 from tqdm import tqdm
 
+# UBFC 数据集的 GT 有三行，第一行代表 BVP 信号，这里原本只加载了第一行，实际上确实只拟合 BVP 就也行
+# 但是在 余梓彤 老师的代码中还需要 HR 数据，因此补充加载了第二行
+# 第三行不知道是什么含义，也没见人用过
+
+# 需要注意的是：在 UBFC 中，subject20、24 的 HR 数据有问题，在 physnet 等需要用到 HR 数据的方法中，需要将这两个 subject 删除
+# 想要可视化的话以下是代码：
+
+# datapth = '/data/chushuyang/UBFC_RAW/subject20/ground_truth.txt'
+# with open(datapth, 'r') as f:
+#     data = f.readlines()
+# dataBvp = [float(strr) for strr in list(data[0].split())]
+# dataBvp = np.array(dataBvp)
+# dataHr = [float(strr) for strr in list(data[1].split())] 
+# dataHr = np.array(dataHr)
+# dataUnknow = [float(strr) for strr in list(data[2].split())]
+# dataUnknow = np.array(dataUnknow)
+# print(len(dataHr))
+# print(len(dataBvp))
+# fig, ax = plt.subplots(1, 3, figsize=(20, 5))
+# ax[0].plot(np.arange(len(dataBvp)), dataBvp)
+# ax[0].set_title('BVP')
+# ax[1].plot(np.arange(len(dataHr)), dataHr)
+# ax[1].set_title('HR')
+# ax[2].plot(np.arange(len(dataUnknow)), dataUnknow)
+# ax[2].set_title('Unknow')
 
 class UBFCLoader(BaseLoader):
     """The data loader for the UBFC dataset."""
@@ -69,11 +94,12 @@ class UBFCLoader(BaseLoader):
         filename = os.path.split(data_dirs[i]['path'])[-1]
         saved_filename = data_dirs[i]['index']
 
-        frames = self.read_video(os.path.join(data_dirs[i]['path'],"001vid.avi"))   # 这里要改成001vid.avi，原本是 vid.avi，这个问题是普遍问题，或许是服务器上数据的命名
-        bvps = self.read_wave(
-            os.path.join(data_dirs[i]['path'],"ground_truth.txt"))
+        frames = self.read_video(os.path.join(data_dirs[i]['path'],"001vid.avi"))   # 这里要改成001vid.avi，原本是 vid.avi，这个问题是普遍问题，或许是服务器上数据的命名不对
+        bvps = self.read_wave(os.path.join(data_dirs[i]['path'],"ground_truth.txt"))
+        hrs = self.read_hr(os.path.join(data_dirs[i]['path'],"ground_truth.txt"))
 
         frames_clips, bvps_clips = self.preprocess(frames, bvps, config_preprocess, config_preprocess.LARGE_FACE_BOX)
+
         count, input_name_list, label_name_list = self.save_multi_process(frames_clips, bvps_clips, saved_filename)
         file_list_dict[i] = input_name_list
 
@@ -99,3 +125,12 @@ class UBFCLoader(BaseLoader):
             str1 = str1.split("\n")
             bvp = [float(x) for x in str1[0].split()]
         return np.asarray(bvp)
+
+    @staticmethod
+    def read_hr(hr_file):
+        """Reads a hr signal file."""
+        with open(hr_file, "r") as f:
+            str1 = f.read()
+            str1 = str1.split("\n")
+            hr = [float(x) for x in str1[1].split()]
+        return np.asarray(hr)

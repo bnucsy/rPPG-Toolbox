@@ -4,7 +4,14 @@ TRAIN:
   BATCH_SIZE: 4
   EPOCHS: 100
   LR: 1e-3
-  MODEL_FILE_NAME: UBFC_UBFC_UBFC_physnet_stan  # 训练集-验证集-测试集-网络-修改程度
+  WEIGHT_DECAY: 0.00005	
+  STRP_SIZE: 50   	# lr 优化器参数
+  GAMMA: 0.5     	# lr 优化器参数
+  A_START: 0.1
+  B_START: 1.0
+  EXP_A: 0.5
+  EXP_B: 5.0		# a --> Pearson loss; b --> frequency loss
+  MODEL_FILE_NAME: UBFC_UBFC_UBFC_physformer_stan  # 训练集-验证集-测试集-网络-修改程度
   DATA:
     FS: 30
     DATASET: UBFC
